@@ -2,7 +2,7 @@
 
 A professional-grade dashboard for visualizing UK national wind power generation forecasts versus actuals, built with real-time data from the BMRS Elexon API. Includes a comprehensive Python analysis suite for forecast error profiling and reliability recommendations.
 
-> **AI Tools Disclosure:** This project was built with the assistance of AI-based coding tools (Gemini / Claude) for code generation, debugging, and boilerplate scaffolding. The analytical notebooks contain original reasoning and first-principles analysis — AI was used only for low-level syntax help and library function calls in the analysis portion.
+> **AI Tools Disclosure:** This project was built with the assistance of AI-based coding tools (Gemini / Claude) for code generation, debugging, and boilerplate scaffolding. The analytical notebooks contain original reasoning and first-principles analysis — AI was used only for low-level syntax help.
 
 ![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js) ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6?logo=typescript) ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-38bdf8?logo=tailwindcss) ![Recharts](https://img.shields.io/badge/Recharts-2-22b5bf)
 
