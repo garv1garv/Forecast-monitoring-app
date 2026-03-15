@@ -160,9 +160,18 @@ See [02_reliability_analysis.py](analysis/02_reliability_analysis.py) for the fu
 
 ## Deployment
 
-The app is currently deployed to Vercel:
+The app can be deployed to Vercel:
 
-https://forecastmonitor.vercel.app/
+```bash
+npx vercel --prod
+```
+
+Or build a production bundle locally:
+
+```bash
+npm run build
+npm start
+```
 
 ---
 

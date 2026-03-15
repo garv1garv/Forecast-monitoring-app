@@ -1,17 +1,29 @@
 import { FuelHHRecord, WindForRecord, ChartDataPoint, ErrorMetrics } from "./types";
 
+/**
+ * Normalize any ISO timestamp to its hour-level key with Z suffix.
+ * e.g. "2024-01-01T23:30:00Z" → "2024-01-01T23:00:00Z"
+ *      "2024-01-01T23:00:00+00:00" → "2024-01-01T23:00:00Z"
+ */
+function toHourKey(isoString: string): string {
+  const d = new Date(isoString);
+  d.setMinutes(0, 0, 0);
+  return d.toISOString().replace("+00:00", "Z");
+}
+
 export function buildChartData(
   actuals: FuelHHRecord[],
   forecasts: WindForRecord[],
   horizonHours: number
 ): ChartDataPoint[] {
-  const forecastsByTarget = new Map<string, WindForRecord[]>();
+  // Group forecasts by their hourly target time
+  const forecastsByHour = new Map<string, WindForRecord[]>();
   for (const fc of forecasts) {
-    const key = fc.startTime;
-    if (!forecastsByTarget.has(key)) {
-      forecastsByTarget.set(key, []);
+    const key = toHourKey(fc.startTime);
+    if (!forecastsByHour.has(key)) {
+      forecastsByHour.set(key, []);
     }
-    forecastsByTarget.get(key)!.push(fc);
+    forecastsByHour.get(key)!.push(fc);
   }
 
   const chartData: ChartDataPoint[] = [];
@@ -21,15 +33,11 @@ export function buildChartData(
     const horizonMs = horizonHours * 60 * 60 * 1000;
     const cutoff = targetTime - horizonMs;
 
-    const targetHour = new Date(actual.startTime);
-    targetHour.setMinutes(0, 0, 0);
-    const targetHourISO = targetHour.toISOString();
+    // Truncate actual's startTime to the hour to match forecast keys
+    const hourKey = toHourKey(actual.startTime);
+    const candidates = forecastsByHour.get(hourKey) || [];
 
-    const candidates = [
-      ...(forecastsByTarget.get(actual.startTime) || []),
-      ...(forecastsByTarget.get(targetHourISO) || []),
-    ];
-
+    // Find the most recent forecast published before the horizon cutoff
     const eligible = candidates.filter((fc) => {
       const publishTime = new Date(fc.publishTime).getTime();
       return publishTime <= cutoff;
